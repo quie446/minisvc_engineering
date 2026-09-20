@@ -1,0 +1,13 @@
+# Keep the build context small; nothing here reaches the runtime image.
+.git
+.gitignore
+bin
+data
+Dockerfile
+docker-compose.yml
+deploy/docker-compose.yml
+deploy/docker-compose.dev.yml
+.dockerignore
+README.md
+scripts
+**/*_test.go

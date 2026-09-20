@@ -1,0 +1,30 @@
+# Release posture: everything ships inside the image (binary, migrations,
+# /etc/minisvc/app.yaml). Only persistent data is volume-mounted.
+name: minisvc
+
+services:
+  minisvc:
+    container_name: minisvc
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+        COMMIT: ${COMMIT:-unknown}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+    image: minisvc:${VERSION:-dev}
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      - minisvc-data:/var/lib/minisvc
+    healthcheck:
+      # Deliberately single-sourced here. Point the path at something else
+      # (e.g. /broken-healthz) to verify the delivery flow fails non-zero.
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  minisvc-data:

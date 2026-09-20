@@ -1,0 +1,13 @@
+# Dev overlay (make up-dev): run the same image but read local configs and
+# migrations via bind mounts, and keep data in ./data so iteration needs no
+# rebuild or named volume to inspect.
+services:
+  minisvc:
+    command: ["-config", "/etc/minisvc/app.dev.yaml"]
+    # Bind-mounted ./data keeps host ownership; run as root in dev only so
+    # the non-root release image stays untouched and local writes work.
+    user: "0:0"
+    volumes: !override
+      - ../configs/app.dev.yaml:/etc/minisvc/app.dev.yaml:ro
+      - ../migrations:/migrations:ro
+      - ../data:/var/lib/minisvc

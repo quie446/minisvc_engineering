@@ -1,0 +1,7 @@
+# Dev posture only (deploy/docker-compose.dev.yml). Same as app.yaml but with
+# container-absolute paths matching the bind mounts, so data lands in ./data.
+env: local
+port: 8080
+data_dir: /var/lib/minisvc
+migrations_dir: /migrations
+health_path: /healthz
