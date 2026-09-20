@@ -1,0 +1,5 @@
+env: prod
+port: 8080
+data_dir: /var/lib/minisvc
+migrations_dir: /migrations
+health_path: /healthz

@@ -1,0 +1,17 @@
+services:
+  minisvc:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      # historically pointed at deploy/, but binary docs say configs/app.yaml
+      - ./deploy:/config:ro
+      - minisvc-data:/var/lib/minisvc
+    # healthcheck path may be overridden by broken env in some forks
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  minisvc-data:

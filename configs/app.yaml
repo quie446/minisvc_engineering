@@ -1,0 +1,6 @@
+# runtime config used by the binary
+env: local
+port: 8080
+data_dir: ./data
+migrations_dir: migrations
+health_path: /healthz
