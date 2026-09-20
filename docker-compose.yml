@@ -1,17 +1,25 @@
+# Releasable posture: builds the same image CI ships.
+# Config and migrations are baked into the image (/config/app.yaml, /migrations);
+# no host path mounts to drift out of sync.
 services:
   minisvc:
-    build: .
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-dev}
+        COMMIT: ${COMMIT:-unknown}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+    image: minisvc:${VERSION:-dev}
     ports:
       - "8080:8080"
     volumes:
-      # historically pointed at deploy/, but binary docs say configs/app.yaml
-      - ./deploy:/config:ro
       - minisvc-data:/var/lib/minisvc
-    # healthcheck path may be overridden by broken env in some forks
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/healthz"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
       interval: 5s
       timeout: 3s
       retries: 10
+      start_period: 5s
+
 volumes:
   minisvc-data:
